@@ -34,6 +34,7 @@ A unit test was added to verify that ListView Model is notifying and sending the
 
 **Solution:** https://github.com/francotripi/android-assessment-project/compare/master...1-the_wrong_state?expand=1
 
+------------------
 
 ### 2. The Lost Event 
 ###### *When the user clicks on an item from the movies list, the app is supposed to display some information about the selected movie (this feature is located in the `detail` module). Currently the app doesn't respond to clicks, can you please fix it?*
@@ -42,6 +43,7 @@ The problem is that the **onItemClick** event is not implemented. This was solve
 
 **Solution:** https://github.com/francotripi/android-assessment-project/compare/1-the_wrong_state...2-the_lost_event?expand=1
 
+------------------
 
 ### 3. The Lost State
 ###### *The app comes with a search bar to help users find their favorite movies. Unfortunately, there is a bug. When we rotate the screen, the app clears the text we just typed. Can you provide a solution to prevent this state loss from happening on rotation.*
@@ -50,6 +52,7 @@ The problem here is that the activity is recreated after each rotation by defaul
 
 **Solution:** https://github.com/francotripi/android-assessment-project/compare/2-the_lost_event...3-the_lost_state?expand=1
 
+------------------
 
 ### 4. Some refreshments
 ###### *We made sure that this app handles networking errors. But we didn't implement any mechanism to reload the data, without quitting the app. Can you provide a way of refreshing the list of movies?*
@@ -58,6 +61,7 @@ This was solved by adding a floating button in ListActivity which, by touching i
 
 **Solution:** https://github.com/francotripi/android-assessment-project/compare/3-the_lost_state...4-some_refreshments?expand=1
 
+------------------
 
 ### 5. The chosen ones 
 ###### *The favorites screen should show a list of the user's favorite movies. Try to implement this feature. Remember that the list of favorite movies should be available even after killing the app.*
@@ -71,6 +75,7 @@ Despite we only need to save a list of String (movies's id), I decided to use **
 
 **Solution:** https://github.com/francotripi/android-assessment-project/compare/4-some_refreshments...5-the_chosen_ones?expand=1
 
+------------------
 
 ### 6. The Shrink 
 ###### *First start by obfuscating the application using Proguard. Now you should have an empty details view in the app, your mission is to fix these issues. Now the apk is smaller, but we know it can be even smaller, use the apk analyzer to find out how to do so.*
@@ -83,6 +88,7 @@ Analyzing the apk size I found that there is a heavy .jpg image that can be size
 
 **Solution:** https://github.com/francotripi/android-assessment-project/compare/5-the_chosen_ones...6-the_shrink?expand=1
 
+------------------
 
 ## Bonus:
 ### Memory leaks 
@@ -100,6 +106,8 @@ The memory leak appears in DetailActivity because there is a reference to this A
 
 The app was also inspected using LeakCanary (https://square.github.io/leakcanary/) to discard any other memory leak.
 
+------------------
+
 ### 2. Java to Kotlin conversion 
 ###### *convert `list` module from Java to Kotlin.*
 
@@ -114,10 +122,11 @@ As recommended in the following article: https://medium.com/swlh/12-steps-to-con
 
 **Solution:** https://github.com/francotripi/android-assessment-project/compare/6-the_shrink...b-2-java_to_kotlin_list_module?expand=1
 
+------------------
 
 ### 3. List loading indicator
 ###### The app loads gradually the list of movies. Add a progress bar to indicate that the next page is loading.
 
-**Not implemented**
+**NOT IMPLEMENTED**
 
 
