@@ -91,7 +91,7 @@ Analyzing the apk size I found that there is a heavy .jpg image that can be size
 ------------------
 
 ## Bonus:
-### Memory leaks 
+### 1. Memory leaks 
 ###### *There is a memory leak. Try to find it and fix it.*
 
 The memory leak appears in DetailActivity because there is a reference to this Activity inside a companion object. When the Activity is destroyed the GC can not remove it from the heap memory because there is still a reference to it from this variable declared inside the companion object. I consider two different alternatives to solve this issue:
