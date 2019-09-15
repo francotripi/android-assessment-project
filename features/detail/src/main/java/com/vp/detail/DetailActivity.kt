@@ -25,9 +25,8 @@ class DetailActivity : DaggerAppCompatActivity(), QueryProvider {
         val binding: ActivityDetailBinding = DataBindingUtil.setContentView(this, R.layout.activity_detail)
         detailViewModel = ViewModelProviders.of(this, factory).get(DetailsViewModel::class.java)
         binding.viewModel = detailViewModel
-        queryProvider = this
         binding.setLifecycleOwner(this)
-        detailViewModel.fetchDetails()
+        detailViewModel.fetchDetails(getMovieId())
         detailViewModel.title().observe(this, Observer {
             supportActionBar?.title = it
         })
@@ -47,14 +46,10 @@ class DetailActivity : DaggerAppCompatActivity(), QueryProvider {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         return when(item?.itemId) {
             R.id.star -> {
-                detailViewModel.saveMovieAsFavorite()
+                detailViewModel.saveMovieAsFavorite(getMovieId())
                 true
             }
             else -> super.onOptionsItemSelected(item)
         }
-    }
-
-    companion object {
-        lateinit var queryProvider: QueryProvider
     }
 }
