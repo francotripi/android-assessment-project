@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">favorites</string>
     <string name="activity_label">Favorites</string>
+
+    <!-- Favorite List Fragment -->
+    <string name="favorite_fragment_empty_list">Favorite list is empty</string>
 </resources>

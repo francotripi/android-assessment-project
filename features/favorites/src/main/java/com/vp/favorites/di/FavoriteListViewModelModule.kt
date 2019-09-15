@@ -1,0 +1,23 @@
+package com.vp.favorites.di
+
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import com.vp.daggeraddons.DaggerViewModelFactory
+import com.vp.daggeraddons.ViewModelKey
+import com.vp.favorites.viewmodel.FavoriteListViewModel
+import dagger.Binds
+import dagger.Module
+import dagger.multibindings.IntoMap
+
+
+@Module
+abstract class FavoriteListViewModelModule {
+
+    @Binds
+    abstract fun bindDaggerViewModelFactory(daggerViewModelFactory: DaggerViewModelFactory): ViewModelProvider.Factory
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(FavoriteListViewModel::class)
+    abstract fun bindFavoriteListViewModel(favoriteListViewModel: FavoriteListViewModel): ViewModel
+}
