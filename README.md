@@ -112,9 +112,9 @@ The app was also inspected using LeakCanary (https://square.github.io/leakcanary
 ###### *convert `list` module from Java to Kotlin.*
 
 This process was done following this steps:
-1. Rename the file from .java to .kt
+1. Rename each file from .java to .kt
 2. Commit change
-3. Rename the file from .kt to .java
+3. Rename each file from .kt to .java
 4. Convert using Android Studio tool
 5. Commit change
 
