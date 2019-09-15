@@ -28,6 +28,17 @@
             android:text="@string/data_loading_error" />
     </ViewAnimator>
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/floatingRefreshButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="@dimen/margin_end_refresh_floating_button"
+        android:layout_marginBottom="@dimen/margin_bottom_refresh_floating_button"
+        android:clickable="true"
+        android:focusable="true"
+        app:srcCompat="@android:drawable/ic_popup_sync" />
+
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigation"
         android:layout_width="match_parent"
