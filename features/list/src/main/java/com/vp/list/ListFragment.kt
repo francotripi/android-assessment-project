@@ -1,183 +1,185 @@
-package com.vp.list;
+package com.vp.list
 
-import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
-import android.content.Intent;
-import android.content.res.Configuration;
-import android.net.Uri;
-import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ProgressBar;
-import android.widget.TextView;
-import android.widget.ViewAnimator;
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import android.content.Intent
+import android.content.res.Configuration
+import android.net.Uri
+import android.os.Bundle
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ProgressBar
+import android.widget.TextView
+import android.widget.ViewAnimator
+import androidx.lifecycle.Observer
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.vp.list.viewmodel.SearchResult;
-import com.vp.list.viewmodel.ListViewModel;
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.vp.list.viewmodel.ListState
+import com.vp.list.viewmodel.SearchResult
+import com.vp.list.viewmodel.ListViewModel
 
-import javax.inject.Inject;
+import javax.inject.Inject
 
-import dagger.android.support.AndroidSupportInjection;
+import dagger.android.support.AndroidSupportInjection
 
-public class ListFragment extends Fragment implements GridPagingScrollListener.LoadMoreItemsListener, ListAdapter.OnItemClickListener {
-    public static final String TAG = "ListFragment";
-    private static final String CURRENT_QUERY = "current_query";
+class ListFragment : Fragment(), GridPagingScrollListener.LoadMoreItemsListener, ListAdapter.OnItemClickListener {
 
     @Inject
-    ViewModelProvider.Factory factory;
+    lateinit var factory: ViewModelProvider.Factory
 
-    private ListViewModel listViewModel;
-    private GridPagingScrollListener gridPagingScrollListener;
-    private ListAdapter listAdapter;
-    private ViewAnimator viewAnimator;
-    private RecyclerView recyclerView;
-    private ProgressBar progressBar;
-    private TextView errorTextView;
-    private String currentQuery = "Interview";
+    private var listViewModel: ListViewModel? = null
+    private var gridPagingScrollListener: GridPagingScrollListener? = null
+    private var listAdapter: ListAdapter? = null
+    private var viewAnimator: ViewAnimator? = null
+    private var recyclerView: RecyclerView? = null
+    private var progressBar: ProgressBar? = null
+    private var errorTextView: TextView? = null
+    private var currentQuery: String? = "Interview"
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        AndroidSupportInjection.inject(this);
-        listViewModel = ViewModelProviders.of(this, factory).get(ListViewModel.class);
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        AndroidSupportInjection.inject(this)
+        listViewModel = ViewModelProviders.of(this, factory).get(ListViewModel::class.java)
     }
 
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_list, container, false);
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_list, container, false)
     }
 
-    @Override
-    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        recyclerView = view.findViewById(R.id.recyclerView);
-        viewAnimator = view.findViewById(R.id.viewAnimator);
-        progressBar = view.findViewById(R.id.progressBar);
-        errorTextView = view.findViewById(R.id.errorText);
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        recyclerView = view.findViewById(R.id.recyclerView)
+        viewAnimator = view.findViewById(R.id.viewAnimator)
+        progressBar = view.findViewById(R.id.progressBar)
+        errorTextView = view.findViewById(R.id.errorText)
 
         if (savedInstanceState != null) {
-            currentQuery = savedInstanceState.getString(CURRENT_QUERY);
+            currentQuery = savedInstanceState.getString(CURRENT_QUERY)
         }
 
-        initRefreshDataButton(view);
-        initBottomNavigation(view);
-        initList();
-        listViewModel.observeMovies().observe(this, searchResult -> {
+        initRefreshDataButton(view)
+        initBottomNavigation(view)
+        initList()
+        listViewModel?.observeMovies()?.observe(this, Observer { searchResult ->
             if (searchResult != null) {
-                handleResult(listAdapter, searchResult);
+                handleResult(listAdapter, searchResult)
             }
-        });
-        listViewModel.searchMoviesByTitle(currentQuery, 1);
-        showProgressBar();
+        })
+        listViewModel?.searchMoviesByTitle(currentQuery, 1)
+        showProgressBar()
     }
 
-    private void initRefreshDataButton(@NonNull View view) {
-        FloatingActionButton refreshDataFloatingButton = view.findViewById(R.id.floatingRefreshButton);
-        refreshDataFloatingButton.setOnClickListener(item -> {
-            listAdapter.clearItems();
-            listViewModel.searchMoviesByTitle(currentQuery, 1);
-            showProgressBar();
-        });
+    private fun initRefreshDataButton(view: View) {
+        val refreshDataFloatingButton = view.findViewById<FloatingActionButton>(R.id.floatingRefreshButton)
+        refreshDataFloatingButton.setOnClickListener {
+            listAdapter?.clearItems()
+            listViewModel?.refreshMovies()
+            showProgressBar()
+        }
     }
 
-    private void initBottomNavigation(@NonNull View view) {
-        BottomNavigationView bottomNavigationView = view.findViewById(R.id.bottomNavigation);
-        bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
-            if (item.getItemId() == R.id.favorites) {
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("app://movies/favorites"));
-                intent.setPackage(requireContext().getPackageName());
-                startActivity(intent);
+    private fun initBottomNavigation(view: View) {
+        val bottomNavigationView = view.findViewById<BottomNavigationView>(R.id.bottomNavigation)
+        bottomNavigationView.setOnNavigationItemSelectedListener { item ->
+            if (item.itemId == R.id.favorites) {
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("app://movies/favorites"))
+                intent.setPackage(requireContext().packageName)
+                startActivity(intent)
             }
-            return true;
-        });
+            true
+        }
     }
 
-    private void initList() {
-        listAdapter = new ListAdapter();
-        listAdapter.setOnItemClickListener(this);
-        recyclerView.setAdapter(listAdapter);
-        recyclerView.setHasFixedSize(true);
-        GridLayoutManager layoutManager = new GridLayoutManager(getContext(),
-                getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT ? 2 : 3);
-        recyclerView.setLayoutManager(layoutManager);
+    private fun initList() {
+        listAdapter = ListAdapter()
+        listAdapter?.setOnItemClickListener(this)
+        recyclerView?.adapter = listAdapter
+        recyclerView?.setHasFixedSize(true)
+        val layoutManager = GridLayoutManager(context,
+                if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) 2 else 3)
+        recyclerView?.layoutManager = layoutManager
 
         // Pagination
-        gridPagingScrollListener = new GridPagingScrollListener(layoutManager);
-        gridPagingScrollListener.setLoadMoreItemsListener(this);
-        recyclerView.addOnScrollListener(gridPagingScrollListener);
+        gridPagingScrollListener = GridPagingScrollListener(layoutManager)
+        gridPagingScrollListener!!.setLoadMoreItemsListener(this)
+        recyclerView?.addOnScrollListener(gridPagingScrollListener!!)
     }
 
-    private void showProgressBar() {
-        viewAnimator.setDisplayedChild(viewAnimator.indexOfChild(progressBar));
-    }
-
-    private void showList() {
-        viewAnimator.setDisplayedChild(viewAnimator.indexOfChild(recyclerView));
-    }
-
-    private void showError() {
-        viewAnimator.setDisplayedChild(viewAnimator.indexOfChild(errorTextView));
-    }
-
-    private void handleResult(@NonNull ListAdapter listAdapter, @NonNull SearchResult searchResult) {
-        switch (searchResult.getListState()) {
-            case LOADED: {
-                setItemsData(listAdapter, searchResult);
-                showList();
-                break;
-            }
-            case IN_PROGRESS: {
-                showProgressBar();
-                break;
-            }
-            default: {
-                showError();
-            }
-        }
-        gridPagingScrollListener.markLoading(false);
-    }
-
-    private void setItemsData(@NonNull ListAdapter listAdapter, @NonNull SearchResult searchResult) {
-        listAdapter.setItems(searchResult.getItems());
-
-        if (searchResult.getTotalResult() <= listAdapter.getItemCount()) {
-            gridPagingScrollListener.markLastPage(true);
+    private fun showProgressBar() {
+        viewAnimator?.let {
+            it.displayedChild = it.indexOfChild(progressBar)
         }
     }
 
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putString(CURRENT_QUERY, currentQuery);
+    private fun showList() {
+        viewAnimator?.let {
+            it.displayedChild = it.indexOfChild(recyclerView)
+        }
     }
 
-    @Override
-    public void loadMoreItems(int page) {
-        gridPagingScrollListener.markLoading(true);
-        listViewModel.searchMoviesByTitle(currentQuery, page);
+    private fun showError() {
+        viewAnimator?.let {
+            it.displayedChild = it.indexOfChild(errorTextView)
+        }
     }
 
-    public void submitSearchQuery(@NonNull final String query) {
-        currentQuery = query;
-        listAdapter.clearItems();
-        listViewModel.searchMoviesByTitle(query, 1);
-        showProgressBar();
+    private fun handleResult(listAdapter: ListAdapter?, searchResult: SearchResult) {
+        when (searchResult.listState) {
+            ListState.LOADED -> {
+                if (listAdapter != null) {
+                    setItemsData(listAdapter, searchResult)
+                    showList()
+                }
+            }
+            ListState.IN_PROGRESS -> {
+                showProgressBar()
+            }
+            else -> {
+                showError()
+            }
+        }
+        gridPagingScrollListener?.markLoading(false)
     }
 
-    @Override
-    public void onItemClick(String imdbID) {
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("app://movies/detail"));
-        intent.setPackage(requireContext().getPackageName());
-        intent.putExtra("imdbID", imdbID);
-        startActivity(intent);
+    private fun setItemsData(listAdapter: ListAdapter, searchResult: SearchResult) {
+        listAdapter.setItems(searchResult.items.toMutableList())
+
+        if (searchResult.totalResult <= listAdapter.itemCount) {
+            gridPagingScrollListener?.markLastPage(true)
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString(CURRENT_QUERY, currentQuery)
+    }
+
+    override fun loadMoreItems(page: Int) {
+        gridPagingScrollListener?.markLoading(true)
+        listViewModel?.searchMoviesByTitle(currentQuery, page)
+    }
+
+    fun submitSearchQuery(query: String) {
+        currentQuery = query
+        listAdapter?.clearItems()
+        listViewModel?.searchMoviesByTitle(query, 1)
+        showProgressBar()
+    }
+
+    override fun onItemClick(imdbID: String) {
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("app://movies/detail"))
+        intent.setPackage(requireContext().packageName)
+        intent.putExtra("imdbID", imdbID)
+        startActivity(intent)
+    }
+
+    companion object {
+        val TAG = "ListFragment"
+        private val CURRENT_QUERY = "current_query"
     }
 }

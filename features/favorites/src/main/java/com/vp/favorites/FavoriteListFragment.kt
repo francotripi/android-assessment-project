@@ -124,7 +124,7 @@ class FavoriteListFragment : Fragment() {
     }
 
     private fun setItemsData(listAdapter: ListAdapter, searchResult: SearchResult) {
-        listAdapter.setItems(searchResult.items)
+        listAdapter.setItems(searchResult.items.toMutableList())
 
         if (searchResult.totalResult <= listAdapter.itemCount) {
             gridPagingScrollListener?.markLastPage(true)

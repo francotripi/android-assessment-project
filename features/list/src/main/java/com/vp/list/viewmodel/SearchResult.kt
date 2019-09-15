@@ -1,59 +1,37 @@
-package com.vp.list.viewmodel;
+package com.vp.list.viewmodel
 
-import com.vp.list.model.ListItem;
+import com.vp.list.model.ListItem
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.Collections
+import java.util.Objects
 
-public class SearchResult {
+class SearchResult private constructor(val items: List<ListItem>, val totalResult: Int, val listState: ListState) {
 
-    private List<ListItem> items;
-    private int totalResult;
-    private ListState listState;
-
-    private SearchResult(List<ListItem> items, int totalResult, ListState listState) {
-        this.items = items;
-        this.listState = listState;
-        this.totalResult = totalResult;
+    override fun equals(o: Any?): Boolean {
+        if (this === o) return true
+        if (o == null || javaClass != o.javaClass) return false
+        val that = o as SearchResult?
+        return totalResult == that!!.totalResult &&
+                items == that.items &&
+                listState === that.listState
     }
 
-    public List<ListItem> getItems() {
-        return items;
+    override fun hashCode(): Int {
+        return Objects.hash(items, totalResult, listState)
     }
 
-    public int getTotalResult() {
-        return totalResult;
-    }
+    companion object {
 
-    public ListState getListState() {
-        return listState;
-    }
+        fun error(): SearchResult {
+            return SearchResult(emptyList(), 0, ListState.ERROR)
+        }
 
-    public static SearchResult error() {
-        return new SearchResult(Collections.emptyList(), 0, ListState.ERROR);
-    }
+        fun success(items: List<ListItem>, totalResult: Int): SearchResult {
+            return SearchResult(items, totalResult, ListState.LOADED)
+        }
 
-    public static SearchResult success(List<ListItem> items, int totalResult) {
-        return new SearchResult(items, totalResult, ListState.LOADED);
-    }
-
-    public static SearchResult inProgress() {
-        return new SearchResult(Collections.emptyList(), 0, ListState.IN_PROGRESS);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        SearchResult that = (SearchResult) o;
-        return totalResult == that.totalResult &&
-                Objects.equals(items, that.items) &&
-                listState == that.listState;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(items, totalResult, listState);
+        fun inProgress(): SearchResult {
+            return SearchResult(emptyList(), 0, ListState.IN_PROGRESS)
+        }
     }
 }

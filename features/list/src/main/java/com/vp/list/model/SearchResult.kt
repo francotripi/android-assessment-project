@@ -1,40 +1,21 @@
-package com.vp.list.model;
+package com.vp.list.model
 
-import androidx.annotation.NonNull;
+import java.util.Collections
 
-import java.util.Collections;
-import java.util.List;
+class SearchResult private constructor(val items: List<ListItem>, private val hasResponse: Boolean, val totalResult: Int) {
 
-public class SearchResult {
-
-    private List<ListItem> items;
-    private boolean hasResponse;
-    private int totalResult;
-
-    private SearchResult(@NonNull List<ListItem> items, boolean hasResponse, int totalResult) {
-        this.items = items;
-        this.hasResponse = hasResponse;
-        this.totalResult = totalResult;
+    fun hasResponse(): Boolean {
+        return hasResponse
     }
 
-    @NonNull
-    public List<ListItem> getItems() {
-        return items;
-    }
+    companion object {
 
-    public boolean hasResponse() {
-        return hasResponse;
-    }
+        fun error(): SearchResult {
+            return SearchResult(emptyList(), false, 0)
+        }
 
-    public int getTotalResult() {
-        return totalResult;
-    }
-
-    public static SearchResult error() {
-        return new SearchResult(Collections.emptyList(), false, 0);
-    }
-
-    public static SearchResult success(List<ListItem> items, int totalResult) {
-        return new SearchResult(items, true, totalResult);
+        fun success(items: List<ListItem>, totalResult: Int): SearchResult {
+            return SearchResult(items, true, totalResult)
+        }
     }
 }

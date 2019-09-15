@@ -1,29 +1,13 @@
-package com.vp.list.model;
+package com.vp.list.model
 
-import com.google.gson.annotations.SerializedName;
+import com.google.gson.annotations.SerializedName
 
-public class ListItem {
+class ListItem {
     @SerializedName("Title")
-    private String title;
+    val title: String? = null
     @SerializedName("Year")
-    private String year;
-    private String imdbID;
+    val year: String? = null
+    val imdbID: String? = null
     @SerializedName("Poster")
-    private String poster;
-
-    public String getTitle() {
-        return title;
-    }
-
-    public String getYear() {
-        return year;
-    }
-
-    public String getImdbID() {
-        return imdbID;
-    }
-
-    public String getPoster() {
-        return poster;
-    }
+    val poster: String? = null
 }

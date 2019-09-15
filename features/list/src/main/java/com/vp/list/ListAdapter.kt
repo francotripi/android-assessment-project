@@ -1,86 +1,76 @@
-package com.vp.list;
+package com.vp.list
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
+import androidx.recyclerview.widget.RecyclerView
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ImageView
 
-import com.vp.list.model.ListItem;
+import com.vp.list.model.ListItem
 
-import java.util.Collections;
-import java.util.List;
+import java.util.Collections
 
-public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListViewHolder> {
-    private static final String NO_IMAGE = "N/A";
-    private List<ListItem> listItems = Collections.emptyList();
-    private OnItemClickListener EMPTY_ON_ITEM_CLICK_LISTENER = imdbID -> {
-        //empty listener
-    };
-    private OnItemClickListener onItemClickListener = EMPTY_ON_ITEM_CLICK_LISTENER;
+class ListAdapter : RecyclerView.Adapter<ListAdapter.ListViewHolder>() {
+    private var listItems: MutableList<ListItem> = emptyList<ListItem>().toMutableList()
 
-    @NonNull
-    @Override
-    public ListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new ListViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_list, parent, false));
+    private var onItemClickListener: OnItemClickListener? = null
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ListViewHolder {
+        return ListViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_list, parent, false))
     }
 
-    @Override
-    public void onBindViewHolder(@NonNull ListViewHolder holder, int position) {
-        ListItem listItem = listItems.get(position);
+    override fun onBindViewHolder(holder: ListViewHolder, position: Int) {
+        val listItem = listItems[position]
 
-        if (listItem.getPoster() != null && !NO_IMAGE.equals(listItem.getPoster())) {
-            final float density = holder.image.getResources().getDisplayMetrics().density;
+        if (listItem.poster != null && NO_IMAGE != listItem.poster) {
+            val density = holder.image.resources.displayMetrics.density
             GlideApp
                     .with(holder.image)
-                    .load(listItem.getPoster())
-                    .override((int) (300 * density), (int) (600 * density))
-                    .into(holder.image);
+                    .load(listItem.poster)
+                    .override((300 * density).toInt(), (600 * density).toInt())
+                    .into(holder.image)
         } else {
-            holder.image.setImageResource(R.drawable.placeholder);
+            holder.image.setImageResource(R.drawable.placeholder)
         }
     }
 
-    @Override
-    public int getItemCount() {
-        return listItems.size();
+    override fun getItemCount(): Int {
+        return listItems.size
     }
 
-    public void setItems(List<ListItem> listItems) {
-        this.listItems = listItems;
-        notifyDataSetChanged();
+    fun setItems(listItems: MutableList<ListItem>) {
+        this.listItems = listItems
+        notifyDataSetChanged()
     }
 
-    public void clearItems() {
-        listItems.clear();
+    fun clearItems() {
+        listItems.clear()
     }
 
-    public void setOnItemClickListener(@Nullable OnItemClickListener onItemClickListener) {
+    fun setOnItemClickListener(onItemClickListener: OnItemClickListener?) {
         if (onItemClickListener != null) {
-            this.onItemClickListener = onItemClickListener;
-        } else {
-            this.onItemClickListener = EMPTY_ON_ITEM_CLICK_LISTENER;
+            this.onItemClickListener = onItemClickListener
         }
     }
 
-    class ListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        ImageView image;
+    inner class ListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
+        var image: ImageView
 
-        ListViewHolder(View itemView) {
-            super(itemView);
-            itemView.setOnClickListener(this);
-            image = itemView.findViewById(R.id.poster);
+        init {
+            itemView.setOnClickListener(this)
+            image = itemView.findViewById(R.id.poster)
         }
 
-        @Override
-        public void onClick(View v) {
-            onItemClickListener.onItemClick(listItems.get(getAdapterPosition()).getImdbID());
+        override fun onClick(v: View) {
+            onItemClickListener?.onItemClick(listItems[adapterPosition].imdbID ?: "")
         }
     }
 
     interface OnItemClickListener {
-        void onItemClick(String imdbID);
+        fun onItemClick(imdbID: String)
+    }
+
+    companion object {
+        private val NO_IMAGE = "N/A"
     }
 }

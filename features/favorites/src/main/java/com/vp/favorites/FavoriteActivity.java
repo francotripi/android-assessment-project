@@ -27,7 +27,7 @@ public class FavoriteActivity extends AppCompatActivity implements HasSupportFra
 
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.activity_favorite_list, new FavoriteListFragment(), ListFragment.TAG)
+                .replace(R.id.activity_favorite_list, new FavoriteListFragment(), ListFragment.Companion.getTAG())
                 .commit();
     }
 

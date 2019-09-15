@@ -1,77 +1,79 @@
-package com.vp.list.viewmodel;
+package com.vp.list.viewmodel
 
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
-import androidx.lifecycle.Observer;
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.Observer
 
-import com.vp.list.model.SearchResponse;
-import com.vp.list.service.SearchService;
+import com.vp.list.model.SearchResponse
+import com.vp.list.service.SearchService
 
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.Rule
+import org.junit.Test
 
-import java.io.IOException;
+import java.io.IOException
 
-import retrofit2.mock.Calls;
+import retrofit2.mock.Calls
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import org.assertj.core.api.Assertions.assertThat
+import org.mockito.ArgumentMatchers.anyInt
+import org.mockito.ArgumentMatchers.anyString
+import org.mockito.Mockito.mock
+import org.mockito.Mockito.verify
+import org.mockito.Mockito.`when`
 
-public class ListViewModelTest {
+class ListViewModelTest {
+
     @Rule
-    public InstantTaskExecutorRule instantTaskRule = new InstantTaskExecutorRule();
+    @JvmField
+    var instantTaskRule = InstantTaskExecutorRule()
 
     @Test
-    public void shouldReturnErrorState() {
+    fun shouldReturnErrorState() {
         //given
-        SearchService searchService = mock(SearchService.class);
-        when(searchService.search(anyString(), anyInt())).thenReturn(Calls.failure(new IOException()));
-        ListViewModel listViewModel = new ListViewModel(searchService);
+        val searchService = mock(SearchService::class.java)
+        `when`(searchService.search(anyString(), anyInt())).thenReturn(Calls.failure(IOException()))
+        val listViewModel = ListViewModel(searchService)
 
         //when
-        listViewModel.searchMoviesByTitle("title", 1);
+        listViewModel.searchMoviesByTitle("title", 1)
 
         //then
-        assertThat(listViewModel.observeMovies().getValue().getListState()).isEqualTo(ListState.ERROR);
+        assertThat(listViewModel.observeMovies().value!!.listState).isEqualTo(ListState.ERROR)
     }
 
     @Test
-    public void shouldReturnInProgressState() {
+    fun shouldReturnInProgressState() {
         //given
-        SearchService searchService = mock(SearchService.class);
-        when(searchService.search(anyString(), anyInt())).thenReturn(Calls.response(mock(SearchResponse.class)));
-        ListViewModel listViewModel = new ListViewModel(searchService);
-        Observer<SearchResult> mockObserver = (Observer<SearchResult>) mock(Observer.class);
-        listViewModel.observeMovies().observeForever(mockObserver);
+        val searchService = mock(SearchService::class.java)
+        `when`(searchService.search(anyString(), anyInt())).thenReturn(Calls.response(mock(SearchResponse::class.java)))
+        val listViewModel = ListViewModel(searchService)
+        val mockObserver = mock(Observer::class.java) as Observer<SearchResult>
+        listViewModel.observeMovies().observeForever(mockObserver)
 
         //when
-        listViewModel.searchMoviesByTitle("title", 1);
+        listViewModel.searchMoviesByTitle("title", 1)
 
         //then
-        verify(mockObserver).onChanged(SearchResult.inProgress());
+        verify(mockObserver).onChanged(SearchResult.inProgress())
     }
 
     @Test
-    public void shouldReturnSuccessState() {
+    fun shouldReturnSuccessState() {
         //given
-        SearchService searchService = mock(SearchService.class);
-        when(searchService.search(anyString(), anyInt())).thenReturn(Calls.response(mock(SearchResponse.class)));
-        ListViewModel listViewModel = new ListViewModel(searchService);
-        Observer<SearchResult> mockObserver = (Observer<SearchResult>) mock(Observer.class);
-        listViewModel.observeMovies().observeForever(mockObserver);
+        val searchService = mock(SearchService::class.java)
+        `when`(searchService.search(anyString(), anyInt())).thenReturn(Calls.response(mock(SearchResponse::class.java)))
+        val listViewModel = ListViewModel(searchService)
+        val mockObserver = mock(Observer::class.java) as Observer<SearchResult>
+        listViewModel.observeMovies().observeForever(mockObserver)
 
         //when
-        listViewModel.searchMoviesByTitle("title", 1);
+        listViewModel.searchMoviesByTitle("title", 1)
 
         //then
         verify(mockObserver).onChanged(
                 SearchResult.success(
-                        listViewModel.observeMovies().getValue().getItems(),
-                        listViewModel.observeMovies().getValue().getTotalResult()
+                        listViewModel.observeMovies().value!!.items,
+                        listViewModel.observeMovies().value!!.totalResult
                 )
-        );
+        )
     }
 }
