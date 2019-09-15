@@ -19,6 +19,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.ViewAnimator;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.vp.list.viewmodel.SearchResult;
 import com.vp.list.viewmodel.ListViewModel;
 
@@ -67,6 +68,7 @@ public class ListFragment extends Fragment implements GridPagingScrollListener.L
             currentQuery = savedInstanceState.getString(CURRENT_QUERY);
         }
 
+        initRefreshDataButton(view);
         initBottomNavigation(view);
         initList();
         listViewModel.observeMovies().observe(this, searchResult -> {
@@ -76,6 +78,15 @@ public class ListFragment extends Fragment implements GridPagingScrollListener.L
         });
         listViewModel.searchMoviesByTitle(currentQuery, 1);
         showProgressBar();
+    }
+
+    private void initRefreshDataButton(@NonNull View view) {
+        FloatingActionButton refreshDataFloatingButton = view.findViewById(R.id.floatingRefreshButton);
+        refreshDataFloatingButton.setOnClickListener(item -> {
+            listAdapter.clearItems();
+            listViewModel.searchMoviesByTitle(currentQuery, 1);
+            showProgressBar();
+        });
     }
 
     private void initBottomNavigation(@NonNull View view) {
