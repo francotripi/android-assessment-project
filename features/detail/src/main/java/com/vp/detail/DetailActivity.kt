@@ -10,6 +10,7 @@ import android.view.MenuItem
 import com.vp.detail.databinding.ActivityDetailBinding
 import com.vp.detail.viewmodel.DetailsViewModel
 import dagger.android.support.DaggerAppCompatActivity
+import java.lang.ref.WeakReference
 import javax.inject.Inject
 import kotlin.run
 
@@ -25,7 +26,7 @@ class DetailActivity : DaggerAppCompatActivity(), QueryProvider {
         val binding: ActivityDetailBinding = DataBindingUtil.setContentView(this, R.layout.activity_detail)
         detailViewModel = ViewModelProviders.of(this, factory).get(DetailsViewModel::class.java)
         binding.viewModel = detailViewModel
-        queryProvider = this
+        queryProvider = WeakReference(this)
         binding.setLifecycleOwner(this)
         detailViewModel.fetchDetails()
         detailViewModel.title().observe(this, Observer {
@@ -55,6 +56,6 @@ class DetailActivity : DaggerAppCompatActivity(), QueryProvider {
     }
 
     companion object {
-        lateinit var queryProvider: QueryProvider
+        lateinit var queryProvider: WeakReference<QueryProvider>
     }
 }
