@@ -3,7 +3,10 @@ The branches in this repository are organized as follow:
 
 **master**: This branch contains the original assessment project as it is in https://github.com/vente-privee/android-assessment-project 
 
-**development**: This branch contains the final solution (challenges 1-6 and bonus activities 1 & 2) 
+**development**: This branch contains the final solution (challenges 1-6 and bonus activities 1 & 2):
+
+https://github.com/francotripi/android-assessment-project/compare/master...development?expand=1
+
 
 Then, you can also find the resolution of each one of the exercises in the following branches:
 
