@@ -29,6 +29,7 @@ You can also find the resolution of each of the exercises in the following branc
 ###### *We took care of fetching the data remotely from the api. So the app is supposed to show a list of posters, but instead it still displays the progress bar. Can you find where the problem is and fix it? And to make sure we won't make the same mistake twice write a simple unit test.*
 
 The problem is that the **ListViewModel** is not notifying and passing the data to the ListFragment when receiving the result from the web service.
+
 A unit test was added to verify that ListView Model is notifying and sending the data when successfully recives the result from the service.
 
 **Solution:** https://github.com/francotripi/android-assessment-project/compare/master...1-the_wrong_state?expand=1
@@ -62,6 +63,7 @@ This was solved by adding a floating button in ListActivity which, by touching i
 ###### *The favorites screen should show a list of the user's favorite movies. Try to implement this feature. Remember that the list of favorite movies should be available even after killing the app.*
 
 The strategy used to implement this feature was to save the movie id using some persistence mechanism and then use API to obtain them from the web service. 
+
 Despite we only need to save a list of String (movies's id), I decided to use **Room Library** to persist the data in a local database. This was implemented in a separate module named **persisntence** that is used by **:feature:favorite** to obtain the saved movie ids and **:feature:detail** to save the movie id when tapping on the star button from the menu *(NOTE: this star button doesn't change the state when is tapped)*.
 
 *NOTE: For code reuse and faster implementation, I added a dependency between **:feature:list** and **:feature:favorite** modules, where Favorite use some clases from List module. This is a bad practice that can be solved by moving the common classes to a separate module and making both modules dependent on the new one.*
@@ -86,14 +88,29 @@ Analyzing the apk size I found that there is a heavy .jpg image that can be size
 ### Memory leaks 
 ###### *There is a memory leak. Try to find it and fix it.*
 
+The memory leak appears in DetailActivity because there is a reference to this Activity inside a companion object. When the Activity is destroyed the GC can not remove it from the heap memory because there is still a reference to it from this variable declared inside the companion object. I consider two different alternatives to solve this issue:
+
+1. Removing the reference inside the companion object that is used by DetailViewModel to get the movie id pulling it from the DetailActivity. I opted for the DetailActivity pushing the movie id to the DetailViewModel instead.
+
 **Solution 1:** https://github.com/francotripi/android-assessment-project/compare/6-the_shrink...b-1-memory_leaks_solution_1?expand=1
 
+2. Declaring the reference inside the companion object as WeakReference, so the GC can remove it from heap memory.
 
 **Solution 2:** https://github.com/francotripi/android-assessment-project/compare/6-the_shrink...b-1-memory_leaks_solution_2?expand=1
 
+The app was also inspected using LeakCanary (https://square.github.io/leakcanary/) to discard any other memory leak.
 
 ### 2. Java to Kotlin conversion 
 ###### *convert `list` module from Java to Kotlin.*
+
+This process was done following this steps:
+1. Rename the file from .java to .kt
+2. Commit change
+3. Rename the file from .kt to .java
+4. Convert using Android Studio tool
+5. Commit change
+
+As recommended in the following article: https://medium.com/swlh/12-steps-to-convert-your-java-class-to-kotlin-the-right-way-9a718cfb498d
 
 **Solution:** https://github.com/francotripi/android-assessment-project/compare/6-the_shrink...b-2-java_to_kotlin_list_module?expand=1
 
@@ -101,6 +118,6 @@ Analyzing the apk size I found that there is a heavy .jpg image that can be size
 ### 3. List loading indicator
 ###### The app loads gradually the list of movies. Add a progress bar to indicate that the next page is loading.
 
-**Missing**
+**Not implemented**
 
 
