@@ -45,3 +45,6 @@
 
 # OkHttp platform used only on JVM and when Conscrypt dependency is available.
 -dontwarn okhttp3.internal.platform.ConscryptPlatform
+
+# Specifies classes and class members whose names are to be preserved, if they aren't removed in the shrinking phase.
+-keepnames class com.vp.** { *; }
