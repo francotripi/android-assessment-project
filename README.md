@@ -68,7 +68,7 @@ This was solved by adding a floating button in ListActivity which, by touching i
 
 The strategy used to implement this feature was to save the movie id using some persistence mechanism and then use API to obtain them from the web service. 
 
-Despite we only need to save a list of String (movies's id), I decided to use **Room Library** to persist the data in a local database. This was implemented in a separate module named **persisntence** that is used by **:feature:favorite** to obtain the saved movie ids and **:feature:detail** to save the movie id when tapping on the star button from the menu *(NOTE: this star button doesn't change the state when is tapped)*.
+Despite we only need to save a list of String (movies's id), I decided to use **Room Library**,following the Android Architecture Components recommendation, to persist the data in a local database. This was implemented in a separate module named **persisntence** that is used by **:feature:favorite** to obtain the saved movie ids and **:feature:detail** to save the movie id when tapping on the star button from the menu *(NOTE: this star button doesn't change the state when is tapped)*.
 
 *NOTE: For code reuse and faster implementation, I added a dependency between **:feature:list** and **:feature:favorite** modules, where Favorite use some clases from List module. This is a bad practice that can be solved by moving the common classes to a separate module and making both modules dependent on the new one.*
 
